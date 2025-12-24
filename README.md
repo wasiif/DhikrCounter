@@ -1,16 +1,69 @@
-# React + Vite
+# Dhikr Counter
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A lightweight, distraction-free Dhikr (remembrance) counter built with React + Vite. This app helps users practice mindful remembrance by counting repetitions with a clean UI, quick controls, and a responsive layout.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
 
-## React Compiler
+- React
+- Vite (fast dev server & build)
+- Plain CSS (small footprint)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## Quick Start
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. Clone the repo
+
+```bash
+git clone https://your-repo-url.git
+cd Dhikr-Counter
+```
+
+2. Install dependencies
+
+```bash
+npm install
+```
+
+3. Run the dev server
+
+```bash
+npm run dev
+```
+
+4. Build for production
+
+```bash
+npm run build
+npm run preview
+```
+
+---
+
+## Project Structure (high level)
+
+- `src/` — React components and styles
+	- `App.jsx` — main app
+	- `Header.jsx` / `Footer.jsx` — layout components
+	- `main.jsx` — entry
+
+---
+
+## Contributing
+
+Contributions are very welcome! A few easy ways to help:
+
+- Open an issue to report bugs or propose features.
+- Send a pull request with a focused change (small commits, descriptive PR).
+- Follow this guideline when contributing:
+	- Fork the repository and create a feature branch.
+	- Keep changes focused and add comments where useful.
+	- Run the dev server to verify your changes.
+
+If you want help picking a first issue, open an issue mentioning "good first issue" and what you'd like to work on.
+
+---
+
+
