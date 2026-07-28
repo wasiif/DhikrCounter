@@ -16,7 +16,7 @@ function Header({ count = 0, target = 0, onReset, t, language, onLanguageChange 
 
       <div className="header-right">
         <nav className="header-nav" aria-label={t('navigation')}>
-          <a className="nav-link" href="#">{t('home')}</a>
+          <a className="nav-link" href="#home">{t('home')}</a>
           <a className="nav-link" href="#about">{t('about')}</a>
           <a className="nav-link" href="#settings">{t('settingsTitle')}</a>
           <a className="nav-link" href="#history">{t('historyTitle')}</a>

@@ -9,10 +9,15 @@ function SettingsPanel({
   onAddPhrase,
   soundEnabled,
   onToggleSound,
-  vibrationEnabled,
-  onToggleVibration,
+  hapticEnabled,
+  onToggleHaptic,
   darkMode,
   onToggleDarkMode,
+  autoResetOnComplete,
+  onToggleAutoReset,
+  fontSizeArabic,
+  onFontSizeArabicChange,
+  onResetAllData,
   t,
   language,
   onLanguageChange,
@@ -36,6 +41,18 @@ function SettingsPanel({
           <option value="en">English</option>
           <option value="ar">العربية</option>
           <option value="ur">اردو</option>
+        </select>
+      </div>
+
+      <div className="form-row">
+        <label htmlFor="theme-select">{t('theme')}</label>
+        <select
+          id="theme-select"
+          value={darkMode ? 'night' : 'light'}
+          onChange={(event) => onToggleDarkMode(event.target.value === 'night')}
+        >
+          <option value="light">{t('lightMode')}</option>
+          <option value="night">{t('nightMode')}</option>
         </select>
       </div>
 
@@ -90,23 +107,45 @@ function SettingsPanel({
 
       <div className="option-list">
         <div className="option-item">
-          <span>{t('soundFeedback')}</span>
-          <button type="button" className={`toggle ${soundEnabled ? 'active' : ''}`} onClick={onToggleSound}>
+          <span>{t('soundEffect')}</span>
+          <button type="button" className={`toggle ${soundEnabled ? 'active' : ''}`} onClick={onToggleSound} aria-pressed={soundEnabled}>
             {soundEnabled ? t('on') : t('off')}
           </button>
         </div>
         <div className="option-item">
-          <span>{t('vibration')}</span>
-          <button type="button" className={`toggle ${vibrationEnabled ? 'active' : ''}`} onClick={onToggleVibration}>
-            {vibrationEnabled ? t('on') : t('off')}
+          <span>{t('hapticFeedback')}</span>
+          <button type="button" className={`toggle ${hapticEnabled ? 'active' : ''}`} onClick={onToggleHaptic} aria-pressed={hapticEnabled}>
+            {hapticEnabled ? t('on') : t('off')}
           </button>
         </div>
         <div className="option-item">
-          <span>{t('darkMode')}</span>
-          <button type="button" className={`toggle ${darkMode ? 'active' : ''}`} onClick={onToggleDarkMode}>
-            {darkMode ? t('on') : t('off')}
+          <span>{t('autoReset')}</span>
+          <button type="button" className={`toggle ${autoResetOnComplete ? 'active' : ''}`} onClick={onToggleAutoReset} aria-pressed={autoResetOnComplete}>
+            {autoResetOnComplete ? t('on') : t('off')}
           </button>
         </div>
+      </div>
+
+      <div className="form-row">
+        <label htmlFor="arabic-font-size">{t('arabicFontSize')}</label>
+        <input
+          id="arabic-font-size"
+          type="range"
+          min="0.85"
+          max="1.3"
+          step="0.05"
+          value={fontSizeArabic}
+          onChange={(event) => onFontSizeArabicChange(parseFloat(event.target.value))}
+        />
+        <p className="help-text">{t('arabicFontSizeHelp')}</p>
+      </div>
+
+      <div className="form-row">
+        <label>{t('dataResetTitle')}</label>
+        <p className="help-text">{t('dataResetHelp')}</p>
+        <button type="button" className="btn btn-tertiary btn-block" onClick={onResetAllData}>
+          {t('resetAllData')}
+        </button>
       </div>
     </section>
   )

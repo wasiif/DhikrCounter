@@ -55,15 +55,20 @@ function App() {
       : ESSENTIAL_ADHKAR,
   )
   const [customPhrase, setCustomPhrase] = useState(savedState.customPhrase ?? '')
-  const [soundEnabled, setSoundEnabled] = useState(savedState.soundEnabled ?? true)
-  const [vibrationEnabled, setVibrationEnabled] = useState(savedState.vibrationEnabled ?? true)
+  const [soundEnabled, setSoundEnabled] = useState(savedState.soundEnabled ?? false)
+  const [hapticEnabled, setHapticEnabled] = useState(savedState.hapticEnabled ?? false)
   const [darkMode, setDarkMode] = useState(savedState.darkMode ?? false)
+  const [autoResetOnComplete, setAutoResetOnComplete] = useState(savedState.autoResetOnComplete ?? false)
+  const [fontSizeArabic, setFontSizeArabic] = useState(savedState.fontSizeArabic ?? 1)
   const [history, setHistory] = useState(savedState.history ?? [])
   const [note, setNote] = useState(savedState.note ?? '')
   const [language, setLanguage] = useState(savedState.language ?? DEFAULT_LANGUAGE)
   const [activeRoutineId, setActiveRoutineId] = useState(savedState.activeRoutineId ?? null)
   const [routineStep, setRoutineStep] = useState(savedState.routineStep ?? 0)
   const [sessionStart, setSessionStart] = useState(() => savedState.sessionStart ?? Date.now())
+  const [isReady, setIsReady] = useState(false)
+  const [resetIntent, setResetIntent] = useState(null)
+  const [clearDataIntent, setClearDataIntent] = useState(false)
 
   useEffect(() => {
     const state = {
@@ -73,8 +78,10 @@ function App() {
       selectedPhrase,
       customPhrase,
       soundEnabled,
-      vibrationEnabled,
+      hapticEnabled,
       darkMode,
+      autoResetOnComplete,
+      fontSizeArabic,
       history,
       note,
       sessionStart,
@@ -83,7 +90,7 @@ function App() {
       routineStep,
     }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-  }, [count, target, phrases, selectedPhrase, customPhrase, soundEnabled, vibrationEnabled, darkMode, history, note, sessionStart, language, activeRoutineId, routineStep])
+  }, [count, target, phrases, selectedPhrase, customPhrase, soundEnabled, hapticEnabled, darkMode, autoResetOnComplete, fontSizeArabic, history, note, sessionStart, language, activeRoutineId, routineStep])
 
   useEffect(() => {
     document.documentElement.classList.toggle('theme-dark', darkMode)
@@ -92,12 +99,27 @@ function App() {
     document.documentElement.lang = language
   }, [darkMode, language])
 
+  useEffect(() => {
+    const timer = window.setTimeout(() => setIsReady(true), 280)
+    return () => clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
+    if (target > 0 && count >= target && autoResetOnComplete) {
+      const resetTimer = window.setTimeout(() => {
+        setCount(0)
+      }, 1400)
+      return () => clearTimeout(resetTimer)
+    }
+    return undefined
+  }, [count, target, autoResetOnComplete])
+
   const activePhrase = phrases[selectedPhrase] || phrases[0] || DEFAULT_PHRASES[0]
   const progress = target > 0 ? Math.min((count / target) * 100, 100) : 0
   const t = (key) => translations[language]?.[key] || translations.en[key] || key
 
   const playFeedback = () => {
-    if (vibrationEnabled && navigator.vibrate) {
+    if (hapticEnabled && navigator.vibrate) {
       navigator.vibrate(18)
     }
 
@@ -133,9 +155,44 @@ function App() {
   }
 
   const handleReset = () => {
+    setResetIntent('progress')
+  }
+
+  const handleConfirmReset = () => {
     setCount(0)
     setNote('')
     setSessionStart(Date.now())
+    setResetIntent(null)
+  }
+
+  const handleResetAllData = () => {
+    setClearDataIntent(true)
+  }
+
+  const handleConfirmClearData = () => {
+    localStorage.removeItem(STORAGE_KEY)
+    setCount(0)
+    setTarget(DEFAULT_TARGET)
+    setSelectedPhrase(0)
+    setPhrases(ESSENTIAL_ADHKAR)
+    setCustomPhrase('')
+    setSoundEnabled(false)
+    setHapticEnabled(false)
+    setDarkMode(false)
+    setAutoResetOnComplete(false)
+    setFontSizeArabic(1)
+    setHistory([])
+    setNote('')
+    setLanguage(DEFAULT_LANGUAGE)
+    setActiveRoutineId(null)
+    setRoutineStep(0)
+    setSessionStart(Date.now())
+    setClearDataIntent(false)
+  }
+
+  const handleCancelConfirmation = () => {
+    setResetIntent(null)
+    setClearDataIntent(false)
   }
 
   const handleCompleteSession = () => {
@@ -281,16 +338,44 @@ function App() {
       cursor.setDate(cursor.getDate() - 1)
     }
 
+    const startOfWeek = new Date(today)
+    startOfWeek.setDate(today.getDate() - today.getDay())
+    startOfWeek.setHours(0, 0, 0, 0)
+    const thisWeekTotal = history.reduce((sum, item) => {
+      const itemDate = new Date(item.completedAt)
+      itemDate.setHours(0, 0, 0, 0)
+      return itemDate >= startOfWeek ? sum + item.count : sum
+    }, 0) + (today >= startOfWeek ? count : 0)
+    const todayTotal = history.reduce((sum, item) => {
+      const itemDate = new Date(item.completedAt)
+      itemDate.setHours(0, 0, 0, 0)
+      return itemDate.getTime() === today.getTime() ? sum + item.count : sum
+    }, 0) + count
+
     return {
       totalSessions,
       totalDhikr,
       averageSession,
       streak,
+      thisWeekTotal,
+      todayTotal,
     }
   }, [history, count])
 
+  if (!isReady) {
+    return (
+      <div className="splash-screen" aria-live="polite">
+        <div className="splash-card">
+          <div className="splash-motif" aria-hidden="true"></div>
+          <h1>{t('splashTitle')}</h1>
+          <p>{t('splashSubtitle')}</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className={`app-shell ${language !== 'en' ? 'rtl' : ''}`}>
+    <div className={`app-shell ${language !== 'en' ? 'rtl' : ''}`} style={{ '--arabic-font-scale': fontSizeArabic }}>
       <Header
         count={count}
         target={target}
@@ -300,8 +385,29 @@ function App() {
         onLanguageChange={setLanguage}
       />
 
+      {(resetIntent || clearDataIntent) && (
+        <div className="modal-backdrop" role="dialog" aria-modal="true">
+          <div className="modal-card">
+            <h2>{t('confirmTitle')}</h2>
+            <p>{resetIntent ? t('confirmResetProgress') : t('confirmResetAllData')}</p>
+            <div className="modal-actions">
+              <button type="button" className="btn btn-secondary" onClick={handleCancelConfirmation}>
+                {t('cancel')}
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={resetIntent ? handleConfirmReset : handleConfirmClearData}
+              >
+                {t('confirm')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <main className="app-content">
-        <section className="hero-card" id="about">
+        <section className="hero-card" id="home">
           <div>
             <p className="eyebrow">{t('heroLead')}</p>
             <h1>{t('appTitle')}</h1>
@@ -314,8 +420,12 @@ function App() {
               <strong>{target} {t('repetitions')}</strong>
             </article>
             <article className="summary-card">
-              <p className="summary-label">{t('totalToday')}</p>
-              <strong>{summary.totalDhikr}</strong>
+              <p className="summary-label">{t('todayTotal')}</p>
+              <strong>{summary.todayTotal}</strong>
+            </article>
+            <article className="summary-card">
+              <p className="summary-label">{t('weekTotal')}</p>
+              <strong>{summary.thisWeekTotal}</strong>
             </article>
             <article className="summary-card">
               <p className="summary-label">{t('completedSessions')}</p>
@@ -363,7 +473,21 @@ function App() {
             />
           </div>
         </section>
-
+ 
+        <section className="about-section" id="about">
+          <div className="panel-header">
+            <div>
+              <p className="eyebrow">{t('aboutLabel')}</p>
+              <h2>{t('aboutTitle')}</h2>
+            </div>
+          </div>
+          <p className="panel-description">{t('aboutText')}</p>
+          <div className="about-notes">
+            <p>{t('aboutNote')}</p>
+            <p>{t('aboutCredits')}</p>
+          </div>
+        </section>
+ 
         <div className="grid-two-col">
           <CounterPanel
             count={count}
@@ -392,10 +516,15 @@ function App() {
               onAddPhrase={handleAddPhrase}
               soundEnabled={soundEnabled}
               onToggleSound={() => setSoundEnabled((active) => !active)}
-              vibrationEnabled={vibrationEnabled}
-              onToggleVibration={() => setVibrationEnabled((active) => !active)}
+              hapticEnabled={hapticEnabled}
+              onToggleHaptic={() => setHapticEnabled((active) => !active)}
               darkMode={darkMode}
-              onToggleDarkMode={() => setDarkMode((active) => !active)}
+              onToggleDarkMode={(value) => setDarkMode(value)}
+              autoResetOnComplete={autoResetOnComplete}
+              onToggleAutoReset={() => setAutoResetOnComplete((active) => !active)}
+              fontSizeArabic={fontSizeArabic}
+              onFontSizeArabicChange={setFontSizeArabic}
+              onResetAllData={handleResetAllData}
               t={t}
               language={language}
               onLanguageChange={setLanguage}

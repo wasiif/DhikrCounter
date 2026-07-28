@@ -8,13 +8,16 @@ Dhikr Counter is an advanced mindfulness tracker built with React and Vite. It i
 - Essential Dhikr library with recommended repeat counts for core adhkar
 - Tasbih Fatimah and Morning & Evening adhkar routines with guided step navigation
 - Asma-ul-Husna reference screen for the 99 beautiful names of Allah
-- Target-based progress tracking with animated circular progress ring
+- Target-based progress tracking with animated circular progress ring and completion states
+- Tap-to-count and swipe-to-count gestures on the main counter for natural rhythm
+- Optional bead sound and haptic feedback controls with accessible touch targets
+- Reset confirmation and clear all data options for safer devotional practice
 - Session completion workflow with notes and grouped history
 - Export history to JSON or CSV for personal record keeping
-- Dark mode, sound feedback, and vibration toggles
-- Daily streak tracking to encourage consistent sessions
+- Daily streak, today and week total tracking to encourage consistency
 - Full multilingual support: English, Arabic, Urdu with RTL layout handling
 - Calm premium interface with sacred color palette, gentle animations, and night mode
+- Full app polish with mobile-first responsive layout, splash screen, and About section
 
 ## Tech stack
 
