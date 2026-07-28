@@ -1,11 +1,11 @@
-function Header({ count = 0, onReset }) {
+﻿function Header({ count = 0, target = 0, onReset }) {
   return (
     <header className="header">
       <div className="header-left">
         <div className="logo" aria-hidden="true">
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="12" cy="12" r="10" fill="#eaeaea" />
-            <path d="M12 6v6l4 2" stroke="#c42525" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M12 6v6l4 2" stroke="#c42525" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
         <div className="header-title">
@@ -19,18 +19,20 @@ function Header({ count = 0, onReset }) {
           <a className="nav-link" href="#">Home</a>
           <a className="nav-link" href="#about">About</a>
           <a className="nav-link" href="#settings">Settings</a>
+          <a className="nav-link" href="#history">History</a>
         </nav>
 
         <div className="counter">
           <span className="counter-label">Count</span>
           <span className="counter-value">{count}</span>
+          <span className="target-label">Target {target}</span>
           {typeof onReset === 'function' && (
             <button className="btn-reset" onClick={onReset} aria-label="Reset counter">Reset</button>
           )}
         </div>
       </div>
     </header>
-  );
+  )
 }
 
-export default Header;
+export default Header

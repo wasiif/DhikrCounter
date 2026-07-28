@@ -1,68 +1,82 @@
 # Dhikr Counter
 
-A lightweight, distraction-free Dhikr (remembrance) counter built with React + Vite. This app helps users practice mindful remembrance by counting repetitions with a clean UI, quick controls, and a responsive layout.
+Dhikr Counter is an advanced mindfulness tracker built with React and Vite. It is designed for daily devotional use, helping users track repetitions, manage session goals, capture notes, and maintain a consistent practice with progress history.
 
----
+## What’s included
 
-## Tech Stack
+- Custom phrase library and selectable Dhikr phrases
+- Target-based progress tracking with animated progress bar
+- Session completion workflow with notes
+- Session history grouped by date
+- Export history to JSON or CSV for personal record keeping
+- Dark mode, sound feedback, and vibration toggles
+- Daily streak tracking to encourage consistent sessions
+- Persistent session state using local storage
 
-- React
-- Vite (fast dev server & build)
-- Plain CSS (small footprint)
+## Tech stack
 
----
+- React 19
+- Vite 8
+- ESLint 10
+- Plain CSS for responsive UI styling
 
-## Quick Start
+## Getting started
 
-1. Clone the repo
+1. Clone the repository:
 
 ```bash
-git clone https://your-repo-url.git
+git clone git@github.com:wasiif/DhikrCounter.git
 cd Dhikr-Counter
 ```
 
-2. Install dependencies
+2. Install dependencies:
 
 ```bash
 npm install
 ```
 
-3. Run the dev server
+3. Run the development server:
 
 ```bash
 npm run dev
 ```
 
-4. Build for production
+4. Build for production:
 
 ```bash
 npm run build
 npm run preview
 ```
 
----
+## Project structure
 
-## Project Structure (high level)
+- `src/`
+  - `App.jsx` — main application shell and state management
+  - `CounterPanel.jsx` — central counter UI and session controls
+  - `SettingsPanel.jsx` — personalization and toggles
+  - `SessionHistory.jsx` — saved session timeline and exports
+  - `Header.jsx` / `Footer.jsx` — layout chrome and metadata
+  - `main.jsx` — app entry point
+  - `App.css`, `index.css` — app-wide styling
 
-- `src/` — React components and styles
-	- `App.jsx` — main app
-	- `Header.jsx` / `Footer.jsx` — layout components
-	- `main.jsx` — entry
+## Security and quality
 
----
+- App logic has been validated with `npm run lint`
+- Production build verified with `npm run build`
+- Dependencies were updated to remove known high-severity audit issues
+- Local storage access is guarded to avoid non-browser execution failures
+
+## Notes
+
+This project is designed as a client-side web app. Session state and history are stored locally in the browser and are not uploaded to any external server.
 
 ## Contributing
 
-Contributions are very welcome! A few easy ways to help:
+Contributions are welcome. If you plan to contribute:
 
-- Open an issue to report bugs or propose features.
-- Send a pull request with a focused change (small commits, descriptive PR).
-- Follow this guideline when contributing:
-	- Fork the repository and create a feature branch.
-	- Keep changes focused and add comments where useful.
-	- Run the dev server to verify your changes.
-
-If you want help picking a first issue, open an issue mentioning "good first issue" and what you'd like to work on.
+- Create a feature branch
+- Keep the change scope narrow
+- Run `npm run lint` and `npm run build` before submitting
 
 ---
 

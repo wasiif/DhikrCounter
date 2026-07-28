@@ -1,4 +1,4 @@
-function Footer({ year = new Date().getFullYear() }) {
+﻿function Footer({ year = new Date().getFullYear(), sessions = 0, totalDhikr = 0 }) {
   return (
     <footer className="footer">
       <div className="footer-left">
@@ -10,21 +10,19 @@ function Footer({ year = new Date().getFullYear() }) {
         </div>
         <div className="footer-info">
           <h2>Dhikr Counter</h2>
-          <p className="footer-sub">Mindful remembrance, one bead at a time</p>
+          <p className="footer-sub">Practice intentionally with focus, streaks, and history.</p>
         </div>
       </div>
 
       <div className="footer-right">
-        <nav className="footer-nav" aria-label="Footer navigation">
-          <a className="nav-link" href="#">Privacy</a>
-          <a className="nav-link" href="#contact">Contact</a>
-          <a className="nav-link" href="#help">Help</a>
-        </nav>
-
+        <div className="footer-meta">
+          <span>{sessions} sessions</span>
+          <span>{totalDhikr} total</span>
+        </div>
         <div className="footer-copy">© {year} Dhikr Counter</div>
       </div>
     </footer>
-  );
+  )
 }
 
-export default Footer;
+export default Footer
