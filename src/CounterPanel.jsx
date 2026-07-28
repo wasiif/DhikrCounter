@@ -1,4 +1,4 @@
-function CounterPanel({
+﻿function CounterPanel({
   count,
   target,
   phrase,
@@ -9,26 +9,57 @@ function CounterPanel({
   onReset,
   note,
   onNoteChange,
+  t,
+  language,
 }) {
-  const targetReached = count >= target
+  const isTasbihFatimah = target === 100 && count >= target
+  const circumference = 2 * Math.PI * 52
+  const dashOffset = circumference - (progress / 100) * circumference
 
   return (
-    <section className="panel panel-counter">
+    <section className={`panel panel-counter ${isTasbihFatimah ? 'tasbih-complete' : ''}`}>
       <div className="panel-header">
         <div>
-          <p className="eyebrow">Current dhikr</p>
-          <h2>{phrase}</h2>
+          <p className="eyebrow">{t('heroLead')}</p>
+          <h2>{phrase.arabic}</h2>
+          <p className="phrase-detail phrase-transliteration">{phrase.transliteration}</p>
+          <p className="phrase-detail phrase-translation">{phrase.translation?.[language] ?? phrase.translation?.en}</p>
         </div>
         <div className="count-badge">
           <span>{count}</span>
-          <small>of {target}</small>
+          <small>{t('ofTarget')} {target}</small>
         </div>
       </div>
 
-      <div className="progress-bar" aria-label="Progress towards target">
-        <div className="progress-fill" style={{ width: `${progress}%` }} />
+      <div className="counter-ring-wrapper">
+        <div className="counter-ring">
+          <svg viewBox="0 0 128 128" className="progress-ring" aria-hidden="true">
+            <circle className="ring-track" cx="64" cy="64" r="52" />
+            <circle
+              className="ring-fill"
+              cx="64"
+              cy="64"
+              r="52"
+              strokeDasharray={circumference}
+              strokeDashoffset={dashOffset}
+            />
+          </svg>
+
+          <button
+            type="button"
+            className="tap-button"
+            onClick={() => onIncrement(1)}
+            aria-label={t('tapToRemember')}
+          >
+            <span className="tap-count">{count}</span>
+            <span className="tap-label">{t('tapToRemember')}</span>
+          </button>
+        </div>
+
+        <p className="counter-ring-copy">
+          {progress.toFixed(0)}% {t('complete')} • {Math.max(target - count, 0)} {t('toGoal')}
+        </p>
       </div>
-      <p className="progress-copy">{progress.toFixed(0)}% complete</p>
 
       <div className="counter-actions">
         <button type="button" className="btn btn-secondary" onClick={() => onDecrement(5)} disabled={count === 0}>
@@ -36,9 +67,6 @@ function CounterPanel({
         </button>
         <button type="button" className="btn btn-secondary" onClick={() => onDecrement(1)} disabled={count === 0}>
           -1
-        </button>
-        <button type="button" className="btn btn-primary" onClick={() => onIncrement(1)}>
-          +1
         </button>
         <button type="button" className="btn btn-primary" onClick={() => onIncrement(5)}>
           +5
@@ -50,20 +78,20 @@ function CounterPanel({
 
       <div className="session-actions">
         <button type="button" className="btn btn-tertiary" onClick={onReset}>
-          Reset Counter
+          {t('resetCounter')}
         </button>
         <button type="button" className="btn btn-success" onClick={onComplete} disabled={count === 0}>
-          {targetReached ? 'Complete Session' : 'Complete Session'}
+          {t('completeSession')}
         </button>
       </div>
 
       <div className="note-panel">
-        <label htmlFor="session-note">Session note</label>
+        <label htmlFor="session-note">{t('sessionNoteLabel')}</label>
         <textarea
           id="session-note"
           value={note}
           onChange={(event) => onNoteChange(event.target.value)}
-          placeholder="Record your intention or gratitude for this session"
+          placeholder={t('sessionNotePlaceholder')}
           rows={4}
         />
       </div>
