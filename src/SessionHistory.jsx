@@ -1,4 +1,4 @@
-function SessionHistory({ history, onClearHistory }) {
+function SessionHistory({ history, onClearHistory, t, language }) {
   const grouped = history.reduce((acc, session) => {
     const date = new Date(session.completedAt).toLocaleDateString()
     acc[date] = acc[date] || []
@@ -6,9 +6,19 @@ function SessionHistory({ history, onClearHistory }) {
     return acc
   }, {})
 
+  const phraseValue = (phrase) => {
+    if (!phrase) {
+      return ''
+    }
+    if (typeof phrase === 'string') {
+      return phrase
+    }
+    return phrase.arabic || phrase.transliteration || phrase.translation?.[language] || phrase.translation?.en || ''
+  }
+
   const exportHistory = (format) => {
     const sanitizedHistory = history.map((session) => ({
-      phrase: session.phrase,
+      phrase: phraseValue(session.phrase),
       count: session.count,
       target: session.target,
       note: session.note,
@@ -51,21 +61,21 @@ function SessionHistory({ history, onClearHistory }) {
     <section className="panel panel-history" id="history">
       <div className="panel-header">
         <div>
-          <p className="eyebrow">Session history</p>
-          <h2>Track your progress</h2>
+          <p className="eyebrow">{t('historyTitle')}</p>
+          <h2>{t('historySubtitle')}</h2>
         </div>
         <div className="history-actions">
           <button type="button" className="btn btn-secondary" onClick={() => exportHistory('json')} disabled={history.length === 0}>
-            Export JSON
+            {t('exportJSON')}
           </button>
           <button type="button" className="btn btn-secondary" onClick={() => exportHistory('csv')} disabled={history.length === 0}>
-            Export CSV
+            {t('exportCSV')}
           </button>
         </div>
       </div>
 
       {history.length === 0 ? (
-        <p className="empty-message">No completed sessions yet. Complete a session to save it here.</p>
+        <p className="empty-message">{t('noHistory')}</p>
       ) : (
         Object.entries(grouped).map(([date, sessions]) => (
           <div key={date} className="history-group">
@@ -74,11 +84,12 @@ function SessionHistory({ history, onClearHistory }) {
               {sessions.map((session) => (
                 <li key={session.id} className="history-row">
                   <div>
-                    <strong>{session.phrase}</strong>
-                    <p>{session.count} repetitions · {session.durationMinutes} min</p>
+                    <strong>{phraseValue(session.phrase)}</strong>
+                    <p>{session.count} {t('repetitions')} · {session.durationMinutes} min</p>
+                    {session.phrase?.transliteration ? <p className="history-subtext">{session.phrase.transliteration}</p> : null}
                   </div>
                   <div className="history-meta">
-                    <span>Target {session.target}</span>
+                    <span>{t('targetRepetitions')} {session.target}</span>
                     {session.note ? <p>{session.note}</p> : null}
                   </div>
                 </li>
@@ -90,7 +101,7 @@ function SessionHistory({ history, onClearHistory }) {
 
       <div className="history-clear">
         <button type="button" className="btn btn-tertiary" onClick={onClearHistory} disabled={history.length === 0}>
-          Clear history
+          {t('clearHistory')}
         </button>
       </div>
     </section>
