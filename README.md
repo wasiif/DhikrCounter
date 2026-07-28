@@ -5,13 +5,16 @@ Dhikr Counter is an advanced mindfulness tracker built with React and Vite. It i
 ## What’s included
 
 - Custom phrase library and selectable Dhikr phrases
-- Target-based progress tracking with animated progress bar
-- Session completion workflow with notes
-- Session history grouped by date
+- Essential Dhikr library with recommended repeat counts for core adhkar
+- Tasbih Fatimah and Morning & Evening adhkar routines with guided step navigation
+- Asma-ul-Husna reference screen for the 99 beautiful names of Allah
+- Target-based progress tracking with animated circular progress ring
+- Session completion workflow with notes and grouped history
 - Export history to JSON or CSV for personal record keeping
 - Dark mode, sound feedback, and vibration toggles
 - Daily streak tracking to encourage consistent sessions
-- Persistent session state using local storage
+- Full multilingual support: English, Arabic, Urdu with RTL layout handling
+- Calm premium interface with sacred color palette, gentle animations, and night mode
 
 ## Tech stack
 
@@ -55,6 +58,9 @@ npm run preview
   - `CounterPanel.jsx` — central counter UI and session controls
   - `SettingsPanel.jsx` — personalization and toggles
   - `SessionHistory.jsx` — saved session timeline and exports
+  - `DhikrLibrary.jsx` — essential adhkar reference and quick selection
+  - `RoutinesPanel.jsx` — guided Tasbih Fatimah and daily adhkar routines
+  - `AsmaHusna.jsx` — browsable 99 Names of Allah reference
   - `Header.jsx` / `Footer.jsx` — layout chrome and metadata
   - `main.jsx` — app entry point
   - `App.css`, `index.css` — app-wide styling
